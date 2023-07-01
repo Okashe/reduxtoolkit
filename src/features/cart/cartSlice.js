@@ -5,7 +5,7 @@ import cartItems from '../../cartItems';
 const url = 'https://course-api.com/react-useReducer-cart-project'
 
 const initialState = {
-    cartItems: cartItems,
+    cartItems: [],
     amount: 0,
     total: 0,
     isLoading: true,
@@ -44,9 +44,22 @@ const cartSlice = createSlice({
 
           state.amount = amount
           state.total =total
-        }
+        },
      
     },
+    extraReducers: {
+      [getCartItems.pending]: (state) => {
+        state.isLoading = true
+      },
+      [getCartItems.fulfilled]: (state, action) => {
+        console.log(action)
+        state.isLoading = false
+        state.cartItems = action.payload
+      },
+      [getCartItems.rejected]: (state) => {
+        state.isLoading = false
+      }
+    }
 });
 
 
@@ -57,7 +70,7 @@ export const {
     removeItem,
     increase,
     decrease,
-    calculateTotal
+    calculateTotal,
 } = cartSlice.actions
 
 export default cartSlice.reducer
