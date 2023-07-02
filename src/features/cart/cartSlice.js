@@ -22,7 +22,9 @@ export const getCartItems = createAsyncThunk(
     //thunkAPI.dispatch(openModal())
       const resp = await axios(url)
       return resp.data
-   }catch(error){}
+   }catch(error){
+    return thunkAPI.rejectWithValue('something went wrong')
+   }
 });
 
 const cartSlice = createSlice({
@@ -57,19 +59,21 @@ const cartSlice = createSlice({
         },
      
     },
-    extraReducers: {
-      [getCartItems.pending]: (state) => {
+    extraReducers: (builder) => {
+      builder
+       .addCase(getCartItems.pending, (state) => {
         state.isLoading = true
-      },
-      [getCartItems.fulfilled]: (state, action) => {
+      })
+      .addCase(getCartItems.fulfilled,(state, action) => {
         console.log(action)
         state.isLoading = false
         state.cartItems = action.payload
-      },
-      [getCartItems.rejected]: (state) => {
+      } )
+      .addCase(getCartItems.rejected, (state, action) => {
+        console.log(action)
         state.isLoading = false
-      }
-    }
+      })
+    }  
 });
 
 
